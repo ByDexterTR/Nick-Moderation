@@ -14,12 +14,12 @@ public Plugin myinfo =
 
 ConVar Limit = null, Announce = null, Limit_Type = null, Limit_Type_Ban = null;
 
-int Check[65] =  { 0, ... };
+int Check[65] = { 0, ... };
 
 public void OnPluginStart()
 {
 	HookEvent("player_changename", Control_ChangeNick);
-	Limit = CreateConVar("sm_changenick_limit", "5", "Bir oyuncu en fazla kaç nick değiştirebilir [ 0 = Kapatır ]", 0, true, 0.0, false);
+	Limit = CreateConVar("sm_changenick_limit", "3", "Bir oyuncu en fazla kaç nick değiştirebilir [ 0 = Kapatır ]", 0, true, 0.0, false);
 	Limit_Type = CreateConVar("sm_changenick_limit_type", "0", "Bir oyuncu çok fazla nick değiştirdiğinde ne yapılsın [ 0 = Kick | 1 = Ban ]", 0, true, 0.0, true, 1.0);
 	Limit_Type_Ban = CreateConVar("sm_changenick_limit_type_ban", "15", "Bir oyuncu çok fazla nick değiştirdiğinde ne kadar dakika banlansın [ Cezanın ban olması gerek ]", 0, true, 1.0, false);
 	Announce = CreateConVar("sm_changenick_announce", "1", "Bir oyuncu nick değiştirdiğinde duyurulsun mu? [ 1 = Evet | 0 = Hayır ]", 0, true, 0.0, true, 1.0);
@@ -39,7 +39,7 @@ public Action Control_ChangeNick(Event event, const char[] name, bool db)
 		if (Limit.IntValue > 0)
 		{
 			Check[client]++;
-			if (Check[client] >= Limit.IntValue)
+			if (Check[client] > Limit.IntValue)
 			{
 				if (!Limit_Type.BoolValue)
 				{
@@ -57,7 +57,7 @@ public Action Control_ChangeNick(Event event, const char[] name, bool db)
 			char oldname[128], newname[128];
 			event.GetString("oldname", oldname, 128);
 			event.GetString("newname", newname, 128);
-			PrintToChatAll("\x10%s \x01ismini \x10%s \x01olarak değiştirdi.", oldname, newname);
+			PrintToChatAll("[SM] \x10%s \x0E(#%d) \x01ismini \x10%s \x0E(#%d) \x06olarak değiştirdi.", oldname, GetClientUserId(client), newname, GetClientUserId(client));
 		}
 	}
 }
